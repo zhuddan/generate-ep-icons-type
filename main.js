@@ -1,7 +1,7 @@
 import fs from "fs"
 import * as keys from '@element-plus/icons-vue'
 
-const size = 12
+const size = 32
 
 const icons = JSON.parse(
   fs.readFileSync('./node_modules/@iconify-json/ep/icons.json').toString()
@@ -13,7 +13,11 @@ function svgToBase64(svgString) {
 }
 
 
-
+/**
+ * 
+ * @param {string} str 
+ * @returns {string}
+ */
   function camelOrPascalToKebab(str) {
     return str
         .replace(/([A-Z]+)([A-Z][a-z])/g, '$1-$2') // 处理多个连续大写的情况
@@ -22,15 +26,22 @@ function svgToBase64(svgString) {
   }
 let res = ''
 Object.keys(keys).forEach(name=>{
-  const iconPath = camelOrPascalToKebab(name)
-  const svg_path = icons[iconPath]
+  const iconKebabName = camelOrPascalToKebab(name)
+  const svg_path = icons[iconKebabName]
   if(!svg_path){
-    console.error('找不到', name, iconPath)
+    console.error('找不到', name, iconKebabName)
   }else{
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 1024 1024">${svg_path.body.replace(/currentColor/g,'#FFFFFF')}</svg>`
-    // res += `    /**\n     *![${name}](${svgToBase64(svg)})\n     */\n    '${iconPath}': typeof import('@element-plus/icons-vue')['${name}']\n`
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 1024 1024">${svg_path.body.replace(/currentColor/g,'#FFFFFF')}</svg>`
 
-    res += `    /**\n     *![${name}](${svgToBase64(svg)})\n     */\n    '${name}': typeof import('@element-plus/icons-vue')['${name}']\n`
+    /**
+     * kebab 命名式组件
+     */
+    const kebabNameType = `    /**\n     *![${name}](${svgToBase64(svg)})\n     */\n    '${iconKebabName}': typeof import('@element-plus/icons-vue')['${name}']\n`
+    /**
+     * pascal 大驼峰组件
+     */
+    const pascalNameType = `    /**\n     *![${name}](${svgToBase64(svg)})\n     */\n    '${name}': typeof import('@element-plus/icons-vue')['${name}']\n`
+    res += iconKebabName.includes('-')?pascalNameType:kebabNameType
    
   }
 })
