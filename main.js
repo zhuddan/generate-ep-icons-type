@@ -28,8 +28,10 @@ Object.keys(keys).forEach(name=>{
     console.error('找不到', name, iconPath)
   }else{
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 1024 1024">${svg_path.body.replace(/currentColor/g,'#FFFFFF')}</svg>`
-    const v = `    /**\n     *![${name}](${svgToBase64(svg)})\n     */\n    ${name}: typeof import('@element-plus/icons-vue')['${name}']\n`
-    res += v
+    // res += `    /**\n     *![${name}](${svgToBase64(svg)})\n     */\n    '${iconPath}': typeof import('@element-plus/icons-vue')['${name}']\n`
+
+    res += `    /**\n     *![${name}](${svgToBase64(svg)})\n     */\n    '${name}': typeof import('@element-plus/icons-vue')['${name}']\n`
+   
   }
 })
 
